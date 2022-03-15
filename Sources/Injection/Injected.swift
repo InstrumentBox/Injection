@@ -24,11 +24,11 @@
 
 @propertyWrapper
 public final class Injected<Dependency> {
-   public var tag: Tag?
+   private var tag: Injection.Tag?
 
    // MARK: - Init
 
-   public init(tag: Tag?) {
+   public init(tag: Injection.Tag?) {
       self.tag = tag
    }
 
@@ -42,5 +42,10 @@ public final class Injected<Dependency> {
       Container.current.resolve(taggedBy: tag)
    }()
 
-   public var projectedValue: Injected<Dependency> { self }
+   public var projectedValue: Injected.Tag {
+      Tag(
+         onGet: { self.tag },
+         onSet: { self.tag = $0 }
+      )
+   }
 }

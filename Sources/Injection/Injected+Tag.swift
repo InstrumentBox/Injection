@@ -1,5 +1,5 @@
 //
-//  InjectedTestCase.swift
+//  Injected+Tag.swift
 //
 //  Copyright © 2022 Aleksei Zaikin.
 //
@@ -22,37 +22,30 @@
 //  THE SOFTWARE.
 //
 
-import Injection
-import XCTest
+extension Injected {
+   public final class Tag {
+      private let onGet: () -> Injection.Tag?
+      private let onSet: (Injection.Tag?) -> Void
 
-final class InjectedTestCase: XCTestCase {
-   private static let dependency = FakeDependency()
-   private static let taggedDependency = FakeDependency()
+      // MARK: - Init
 
-   // MARK: - Lifecycle
+      init(
+         onGet: @escaping () -> Injection.Tag?,
+         onSet: @escaping (Injection.Tag?) -> Void
+      ) {
+         self.onGet = onGet
+         self.onSet = onSet
+      }
 
-   override class func setUp() {
-      super.setUp()
+      // MARK: - Tag
 
-      let container = Container()
-      container.register(dependency, as: Dependency.self)
-      container.register(taggedDependency, as: Dependency.self, taggedBy: DependencyTag.fake)
-      Container.current = container
-   }
-
-   // MARK: - Test Cases
-
-   func test_injected_resolvesDependency() {
-      XCTAssertTrue(FakeDependency().dependency === InjectedTestCase.dependency)
-   }
-
-   func test_injected_resolvesTaggedDependency() {
-      XCTAssertTrue(FakeDependency().taggedDependency === InjectedTestCase.taggedDependency)
-   }
-
-   func test_projectedValue_changesTag() {
-      let dependency = FakeDependency()
-      dependency.$dependency.tag = DependencyTag.fake
-      XCTAssertTrue(dependency.dependency === InjectedTestCase.taggedDependency)
+      public var tag: Injection.Tag? {
+         get {
+            onGet()
+         }
+         set {
+            onSet(newValue)
+         }
+      }
    }
 }
