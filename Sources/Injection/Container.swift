@@ -28,7 +28,7 @@ public enum ContainerError: Error {
 }
 
 public final class Container {
-   public static var current = Container()
+   public static var shared = Container()
 
    private var factories: [String: () -> Any] = [:]
 

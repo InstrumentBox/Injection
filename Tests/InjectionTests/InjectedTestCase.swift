@@ -37,7 +37,7 @@ final class InjectedTestCase: XCTestCase {
       let container = Container()
       container.register(dependency, as: Dependency.self)
       container.register(taggedDependency, as: Dependency.self, taggedBy: DependencyTag.fake)
-      Container.current = container
+      Container.shared = container
    }
 
    // MARK: - Test Cases

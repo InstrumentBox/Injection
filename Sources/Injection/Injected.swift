@@ -39,7 +39,7 @@ public final class Injected<Dependency> {
    // MARK: - Property Wrapper
 
    public lazy var wrappedValue: Dependency = {
-      Container.current.resolve(taggedBy: tag)
+      Container.shared.resolve(taggedBy: tag)
    }()
 
    public var projectedValue: Injected.Projection {

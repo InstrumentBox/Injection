@@ -56,7 +56,7 @@ final class NavigationArgumentTestCase: XCTestCase {
    private func makeContainer() {
       let container = Container()
       container.register(SourceToDestinationNavigationContext.shared)
-      Container.current = container
+      Container.shared = container
    }
 }
 
