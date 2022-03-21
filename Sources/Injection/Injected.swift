@@ -42,10 +42,10 @@ public final class Injected<Dependency> {
       Container.current.resolve(taggedBy: tag)
    }()
 
-   public var projectedValue: Injected.Tag {
-      Tag(
-         onGet: { self.tag },
-         onSet: { self.tag = $0 }
+   public var projectedValue: Injected.Projection {
+      Projection(
+         onGetTag: { self.tag },
+         onSetTag: { self.tag = $0 }
       )
    }
 }

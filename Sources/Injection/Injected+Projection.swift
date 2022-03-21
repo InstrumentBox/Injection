@@ -1,5 +1,5 @@
 //
-//  Injected+Tag.swift
+//  Injected+Projection.swift
 //
 //  Copyright © 2022 Aleksei Zaikin.
 //
@@ -23,28 +23,28 @@
 //
 
 extension Injected {
-   public final class Tag {
-      private let onGet: () -> Injection.Tag?
-      private let onSet: (Injection.Tag?) -> Void
+   public final class Projection {
+      private let onGetTag: () -> Tag?
+      private let onSetTag: (Tag?) -> Void
 
       // MARK: - Init
 
       init(
-         onGet: @escaping () -> Injection.Tag?,
-         onSet: @escaping (Injection.Tag?) -> Void
+         onGetTag: @escaping () -> Tag?,
+         onSetTag: @escaping (Tag?) -> Void
       ) {
-         self.onGet = onGet
-         self.onSet = onSet
+         self.onGetTag = onGetTag
+         self.onSetTag = onSetTag
       }
 
       // MARK: - Tag
 
-      public var tag: Injection.Tag? {
+      public var tag: Tag? {
          get {
-            onGet()
+            onGetTag()
          }
          set {
-            onSet(newValue)
+            onSetTag(newValue)
          }
       }
    }

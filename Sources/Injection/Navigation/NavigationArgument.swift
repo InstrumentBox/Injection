@@ -54,7 +54,7 @@ public final class NavigationArgument<Context: NavigationContext> {
 
    public var projectedValue: Projection {
       Projection(
-         tag: $context,
+         injectedProjection: $context,
          onGetContext: { self.context },
          onSetContext: { self.context = $0 }
       )

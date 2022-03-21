@@ -24,18 +24,18 @@
 
 extension NavigationArgument {
    public final class Projection {
-      private let _tag: Injected<Context>.Tag
+      private let injectedProjection: Injected<Context>.Projection
       private let onGetContext: () -> Context
       private let onSetContext: (Context) -> Void
 
       // MARK: - Init
 
       init(
-         tag: Injected<Context>.Tag,
+         injectedProjection: Injected<Context>.Projection,
          onGetContext: @escaping () -> Context,
          onSetContext: @escaping (Context) -> Void
       ) {
-         self._tag = tag
+         self.injectedProjection = injectedProjection
          self.onGetContext = onGetContext
          self.onSetContext = onSetContext
       }
@@ -51,12 +51,12 @@ extension NavigationArgument {
          }
       }
 
-      public var tag: Injection.Tag? {
+      public var tag: Tag? {
          get {
-            _tag.tag
+            injectedProjection.tag
          }
          set {
-            _tag.tag = newValue
+            injectedProjection.tag = newValue
          }
       }
    }
