@@ -43,13 +43,6 @@ public final class Container {
    // MARK: - Registration
 
    public func register<Dependency>(
-      taggedBy tag: Tag? = nil,
-      factory: @escaping () -> Dependency
-   ) {
-      register(factory(), as: Dependency.self, taggedBy: tag)
-   }
-
-   public func register<Dependency>(
       _ dependency: @autoclosure @escaping () -> Dependency,
       taggedBy tag: Tag? = nil
    ) {
