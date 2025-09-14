@@ -48,14 +48,7 @@ public final class Container: @unchecked Sendable {
 
    public func register<Dependency>(
       _ dependency: @autoclosure @escaping () -> Dependency,
-      taggedBy tag: Tag? = nil
-   ) {
-      register(dependency(), as: Dependency.self, taggedBy: tag)
-   }
-
-   public func register<Dependency>(
-      _ dependency: @autoclosure @escaping () -> Dependency,
-      as: Dependency.Type,
+      as: Dependency.Type = Dependency.self,
       taggedBy tag: Tag? = nil
    ) {
       lock.withLock {

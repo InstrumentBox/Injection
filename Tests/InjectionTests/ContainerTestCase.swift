@@ -58,7 +58,7 @@ final class ContainerTestCase: XCTestCase {
    }
 
    func test_container_registersThenResolvesDependency_usingMethodAsFactory() throws {
-      container.register(self.makeDependency)
+      container.register(self.makeDependency())
       let dependency: Dependency = try container.tryResolve()
       XCTAssertTrue(dependency === dependency)
    }
