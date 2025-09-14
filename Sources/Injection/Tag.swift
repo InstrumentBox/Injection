@@ -22,7 +22,7 @@
 //  THE SOFTWARE.
 //
 
-public protocol Tag {
+public protocol Tag: Sendable {
    var stringValue: String { get }
 }
 

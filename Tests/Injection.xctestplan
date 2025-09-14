@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "736BD6ED-542D-49FB-9E92-3167E9D49CB4",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "InjectionTests",
+        "name" : "InjectionTests"
+      }
+    }
+  ],
+  "version" : 1
+}

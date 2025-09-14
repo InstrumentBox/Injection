@@ -22,14 +22,18 @@
 //  THE SOFTWARE.
 //
 
+import Foundation
+
 public enum ContainerError: Error {
    case cannotFindRegistration(type: String, tag: Tag?)
    case typeMismatch(expected: String, given: String)
 }
 
-public final class Container {
+public final class Container: @unchecked Sendable {
+   nonisolated(unsafe)
    public static var shared = Container()
 
+   private let lock = NSRecursiveLock()
    private var factories: [String: () -> Any] = [:]
 
    private let parent: Container?
@@ -54,44 +58,50 @@ public final class Container {
       as: Dependency.Type,
       taggedBy tag: Tag? = nil
    ) {
-      let key = makeKey(type: Dependency.self, tag: tag)
-      factories[key] = dependency
+      lock.withLock {
+         let key = makeKey(type: Dependency.self, tag: tag)
+         factories[key] = dependency
+      }
    }
 
    // MARK: - Resolving
 
    public func tryResolve<Dependency>(taggedBy tag: Tag? = nil) throws -> Dependency {
-      let key = makeKey(type: Dependency.self, tag: tag)
-      if let factory = factories[key] {
-         let anyDependency = factory()
-         guard let dependency = anyDependency as? Dependency else {
-            throw ContainerError.typeMismatch(
-               expected: "\(Dependency.self)",
-               given: "\(type(of: anyDependency))"
-            )
-         }
+      try lock.withLock {
+         let key = makeKey(type: Dependency.self, tag: tag)
+         if let factory = factories[key] {
+            let anyDependency = factory()
+            guard let dependency = anyDependency as? Dependency else {
+               throw ContainerError.typeMismatch(
+                  expected: "\(Dependency.self)",
+                  given: "\(type(of: anyDependency))"
+               )
+            }
 
-         return dependency
-      } else if let parent = parent {
-         return try parent.tryResolve(taggedBy: tag)
-      } else {
-         throw ContainerError.cannotFindRegistration(type: "\(Dependency.self)", tag: tag)
+            return dependency
+         } else if let parent = parent {
+            return try parent.tryResolve(taggedBy: tag)
+         } else {
+            throw ContainerError.cannotFindRegistration(type: "\(Dependency.self)", tag: tag)
+         }
       }
    }
 
    public func resolve<Dependency>(taggedBy tag: Tag? = nil) -> Dependency {
-      do {
-         return try tryResolve(taggedBy: tag)
-      } catch let ContainerError.typeMismatch(expected, given) {
-         fatalError("Can't resolve dependency: expected \(expected) but found \(given)")
-      } catch let ContainerError.cannotFindRegistration(type, tag) {
-         var message = "Can't resolve dependency: registration not found for \(type)"
-         if let tag = tag {
-            message += " tagged by \(tag)"
+      lock.withLock {
+         do {
+            return try tryResolve(taggedBy: tag)
+         } catch let ContainerError.typeMismatch(expected, given) {
+            fatalError("Can't resolve dependency: expected \(expected) but found \(given)")
+         } catch let ContainerError.cannotFindRegistration(type, tag) {
+            var message = "Can't resolve dependency: registration not found for \(type)"
+            if let tag = tag {
+               message += " tagged by \(tag)"
+            }
+            fatalError(message)
+         } catch {
+            fatalError("Can't resolve dependency: unknown error \(error)")
          }
-         fatalError(message)
-      } catch {
-         fatalError("Can't resolve dependency: unknown error \(error)")
       }
    }
 

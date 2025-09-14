@@ -26,7 +26,10 @@ import Injection
 import XCTest
 
 final class InjectedTestCase: XCTestCase {
+   nonisolated(unsafe)
    private static let dependency = FakeDependency()
+
+   nonisolated(unsafe)
    private static let taggedDependency = FakeDependency()
 
    // MARK: - Lifecycle

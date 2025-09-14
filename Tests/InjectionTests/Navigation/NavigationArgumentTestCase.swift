@@ -61,6 +61,7 @@ final class NavigationArgumentTestCase: XCTestCase {
 }
 
 private final class SourceToDestinationNavigationContext: NavigationContext {
+   nonisolated(unsafe)
    private static weak var _shared: SourceToDestinationNavigationContext?
 
    static var shared: SourceToDestinationNavigationContext {
